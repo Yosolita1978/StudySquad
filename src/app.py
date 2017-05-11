@@ -92,6 +92,7 @@ def fb_webhook():
 
     # Get the request body as a dict, parsed from JSON.
     payload = flask.request.json
+    print payload
 
     # TODO: Validate app ID and other parts of the payload to make sure we're
     # not accidentally processing data that wasn't intended for us.
