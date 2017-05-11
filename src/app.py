@@ -69,7 +69,7 @@ def index():
     # query results.
     return flask.render_template('index.html', users=User.query.all())
 
-
+#This comment isn't Skynet level AI either, but I like the "keep it short policy"
 @app.route('/fb_webhook', methods=['GET', 'POST'])
 def fb_webhook():
     """This handler deals with incoming Facebook Messages.
