@@ -8,13 +8,16 @@ This file creates your application.
 """
 
 import os
-
+import re
 import flask
 import requests
 from flask_sqlalchemy import SQLAlchemy
 
+
 FACEBOOK_API_MESSAGE_SEND_URL = (
     'https://graph.facebook.com/v2.6/me/messages?access_token=%s')
+
+ADDRESS_REQUEST_REGEX = re.compile(r'address of (\w+)\?*', re.IGNORECASE)
 
 app = flask.Flask(__name__)
 
@@ -32,6 +35,7 @@ db = SQLAlchemy(app)
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True)
+    facebook_id = db.Column(db.String, unique=True)
 
 
 class Address(db.Model):
@@ -45,6 +49,46 @@ class Address(db.Model):
     # This adds an attribute 'user' to each address, and an attribute
     # 'addresses' (containing a list of addresses) to each user.
     user = db.relationship('User', backref='addresses')
+
+
+def handle_message(message, sender_id):
+
+    user = User.query.filter(User.facebook_id == sender_id).first()
+    if not user:
+        user = User(facebook_id=sender_id)
+        db.session.add(user)
+        db.session.commit()
+        return "Grettings, what is your name? "
+
+    elif not user.username:
+        user.username = message
+        db.session.add(user)
+        db.session.commit()
+        return "Hi, %s! What is your adress?" % (user.username)
+
+    elif not user.addresses:
+        new_address = Address(full_address=message, user=user)
+        db.session.add(new_address)
+        db.session.commit()
+        return "Got it"
+
+    elif ADDRESS_REQUEST_REGEX.search(message):
+        match = ADDRESS_REQUEST_REGEX.search(message)
+        username = match.groups(1)
+        requested_user = User.query.filter(User.username == username).first()
+        if not requested_user:
+            return "Sorry, I don't know that person"
+        addresses = requested_user.addresses
+        if len(addresses) == 0:
+            return "Sorry, The user %s don't have an adress with me" % (user.username)
+
+        else:
+            address = addresses[0]
+            return "I got: %s" % (address.full_address)
+
+
+    else:
+        return "Bear with me, %s!" % (user.username)
 
 
 @app.route('/')
@@ -112,12 +156,14 @@ def fb_webhook():
                 continue
             sender_id = event['sender']['id']
             message_text = message['text']
-            request_url = FACEBOOK_API_MESSAGE_SEND_URL % (
+            reply = handle_message(message_text, sender_id)
+            if reply:
+                request_url = FACEBOOK_API_MESSAGE_SEND_URL % (
                 app.config['FACEBOOK_PAGE_ACCESS_TOKEN'])
-            requests.post(request_url,
+                requests.post(request_url,
                           headers={'Content-Type': 'application/json'},
                           json={'recipient': {'id': sender_id},
-                                'message': {'text': "I'm Groot"}})
+                                'message': {'text': reply}})
 
     # Return an empty response.
     return ''
