@@ -18,6 +18,9 @@ FACEBOOK_API_MESSAGE_SEND_URL = (
     'https://graph.facebook.com/v2.6/me/messages?access_token=%s')
 
 ADDRESS_REQUEST_REGEX = re.compile(r'address of (\w+)\?*', re.IGNORECASE)
+ADD_TASK_REGEX = re.compile(r'ADD\s(.+)', re.IGNORECASE)
+DONE_TASK_REGEX = re.compile(r'DONE\s(.+)', re.IGNORECASE)
+LIST_DONE_REGEX = re.compile(r'(list done)', re.IGNORECASE)
 
 app = flask.Flask(__name__)
 
@@ -51,8 +54,26 @@ class Address(db.Model):
     user = db.relationship('User', backref='addresses')
 
 
-def handle_message(message, sender_id):
+class Tasks(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    # Free form for simplicity. for now, an user can have multiples time the same task. This could be improve
+    full_task = db.Column(db.String, nullable=False)
 
+    # Connect each task to exactly one user.
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
+                        nullable=False)
+
+    #This param is a boolean for the task. For default is False.
+    is_check = db.Column(db.Boolean, nullable=False, default=False)
+    # This adds an attribute 'user' to each task, and an attribute
+    # 'tasks' (containing a list of tasks) to each user.
+    user = db.relationship('User', backref='tasks')
+
+
+def handle_message(message, sender_id):
+    """This function deals with all the messages from a user. It has all the logic """
+
+    #First query for the user that is taking to the bot
     user = User.query.filter(User.facebook_id == sender_id).first()
     if not user:
         user = User(facebook_id=sender_id)
@@ -60,35 +81,64 @@ def handle_message(message, sender_id):
         db.session.commit()
         return "Grettings, what is your name? "
 
+    #If there is an user but the bot doesn't have a name
     elif not user.username:
         user.username = message
         db.session.add(user)
         db.session.commit()
-        return "Hi, %s! What is your adress?" % (user.username)
+        return "Hi, %s! Type LIST to know your to-do list" % (user.username)
 
-    elif not user.addresses:
-        new_address = Address(full_address=message, user=user)
-        db.session.add(new_address)
-        db.session.commit()
-        return "Got it"
+    elif "LIST DONE" in message:
+        done_task = Tasks.query.filter(Tasks.user_id == user.id, Tasks.is_check.is_(True)).all()
+        number_done = len(done_task)
+        print done_task
+        done_list = []
+        for task in done_task:
+            done_list.append((str(task.id), task.full_task))
+        print done_list
+        dones = [' '.join(item) for item in done_list]
+        return "You currently have %i items DONE in your to-do list. %s." % (number_done, dones)
 
-    elif ADDRESS_REQUEST_REGEX.search(message):
-        match = ADDRESS_REQUEST_REGEX.search(message)
-        username = match.groups(1)
-        requested_user = User.query.filter(User.username == username).first()
-        if not requested_user:
-            return "Sorry, I don't know that person"
-        addresses = requested_user.addresses
-        if len(addresses) == 0:
-            return "Sorry, The user %s don't have an adress with me" % (user.username)
+    elif "LIST" in message:
+        all_task = user.tasks
+        number_task = len(all_task)
+        if not all_task:
+            return "%s, you don't have to-dos in your list. Do you want to add a new task? Please type ADD before your task" % (user.username)
 
         else:
-            address = addresses[0]
-            return "I got: %s" % (address.full_address)
+            notdone_task = Tasks.query.filter(Tasks.user_id == user.id, Tasks.is_check.is_(False)).all()
+
+            notdone_list = []
+            for task in notdone_task:
+                notdone_list.append((str(task.id), task.full_task))
+
+            string_list = [' '.join(item) for item in notdone_list]
+            return "You currently have %i items in your to-do list. %s." % (len(notdone_list), string_list)
+
+        return "All you %i tasks are done. Do you want to add a task? Please type ADD before your task" % (number_task)
 
 
-    else:
-        return "Bear with me, %s!" % (user.username)
+    elif "ADD" in message:
+        new_task_message = ADD_TASK_REGEX.search(message)
+        new_task = new_task_message.group(1)
+        user_new_task = Tasks(full_task=new_task, user=user)
+        db.session.add(user_new_task)
+        db.session.commit()
+        return "To-do item '%s' added to list." % (new_task)
+
+    elif "DONE" in message:
+        new_done_message = DONE_TASK_REGEX.search(message)
+        new_done_task_string = new_done_message.group(1)
+        new_done_task = Tasks.query.filter(Tasks.full_task == new_done_task_string, Tasks.user_id == user.id).first()
+        if not new_done_task:
+            return "Sorry %s, I don't have that to-do item for you. Are you sure you type correctly? Please type the same item"
+        else:
+            new_done_task.is_check = True
+            db.session.merge(new_done_task)
+            db.session.commit()
+            return "To-do item #%i (%s) marked as done." % (new_done_task.id, new_done_task.full_task)
+
+    return "Hi, %s. I'm a to-do bot. You can ADD items, mark as DONE items, see all your LIST, or all your LIST DONE items.\n What do you want to do?" % (user.username)
 
 
 @app.route('/')
