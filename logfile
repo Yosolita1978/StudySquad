@@ -16,3 +16,36 @@ LOG:  unexpected EOF on client connection with an open transaction
 LOG:  unexpected EOF on client connection with an open transaction
 LOG:  unexpected EOF on client connection with an open transaction
 LOG:  unexpected EOF on client connection with an open transaction
+ERROR:  database "cristina" already exists
+STATEMENT:  CREATE DATABASE cristina;
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+FATAL:  database "grootbo" does not exist
+ERROR:  column "username" does not exist at character 8
+STATEMENT:  SELECT username FROM user;
+LOG:  unexpected EOF on client connection with an open transaction
+FATAL:  role "grootbot" does not exist
+ERROR:  database "grootbot" is being accessed by other users
+DETAIL:  There is 1 other session using the database.
+STATEMENT:  DROP DATABASE grootbot;
+LOG:  unexpected EOF on client connection with an open transaction
+ERROR:  relation "grootbot.user" does not exist at character 15
+STATEMENT:  SELECT * FROM grootbot.user;
+ERROR:  syntax error at or near "'user'" at character 15
+STATEMENT:  SELECT * FROM 'user';
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction
+FATAL:  database "grootbo" does not exist
+LOG:  unexpected EOF on client connection with an open transaction
+LOG:  unexpected EOF on client connection with an open transaction

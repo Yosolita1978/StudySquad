@@ -1,0 +1,10 @@
+LOG:  database system was interrupted; last known up at 2017-05-17 21:49:43 PDT
+LOG:  database system was not properly shut down; automatic recovery in progress
+LOG:  invalid record length at 0/1AC83E8
+LOG:  redo is not required
+LOG:  MultiXact member wraparound protections are now enabled
+LOG:  database system is ready to accept connections
+LOG:  autovacuum launcher started
+ERROR:  database "testdb" does not exist
+STATEMENT:  DROP DATABASE testdb;
+FATAL:  database "testdb" does not exist

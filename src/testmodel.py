@@ -1,6 +1,7 @@
+import os
 from unittest import TestCase
-from app import db
-from flask_sqlalchemy import SQLAlchemy
+os.environ.setdefault('DATABASE_URL', 'postgresql:///testdb')
+from app import db, app, handle_message, User
 
 
 ##############################################################################
@@ -11,9 +12,6 @@ class FlaskTestsDatabase(TestCase):
 
     def setUp(self):
         """Stuff to do before every test."""
-
-        # Connect to test database
-        db = SQLAlchemy(app, db_url="postgresql:///testdb")
 
         # Get the Flask test client
         self.client = app.test_client()
@@ -28,9 +26,13 @@ class FlaskTestsDatabase(TestCase):
         db.session.close()
         db.drop_all()
 
-    def test_it_returns_all_the_users(self):
+    def test_creates_a_new_user(self):
         """This test is for db, so it needs to show all the user in my db"""
-        pass
+
+        reply = handle_message(message="HI", sender_id="234567")
+
+        self.assertEqual("Grettings, what is your name? ", reply)
+        self.assertTrue(User.query.filter(User.facebook_id == "234567").one())
 
 if __name__ == "__main__":
     import unittest
