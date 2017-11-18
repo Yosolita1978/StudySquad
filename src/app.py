@@ -117,7 +117,7 @@ def index():
     """
     homepage central
     """
-    return "Hiiii Welcome to the STUDY SQUAD BOT HOMEPAGE"
+    return render_template("homepage.html")
 
 #This comment isn't Skynet level AI either, but I like the "keep it short policy"
 @app.route('/fb_webhook', methods=['GET', 'POST'])
