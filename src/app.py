@@ -32,6 +32,7 @@ class User(db.Model):
 def greeting(message, user):
     """ returns greeting to user with yes or no button of is it right"""
     reply = "Meeeoooowwww! Hiiiii your name is %s that right?".format(user)
+    print "GREETING REPLY IS", reply
     return reply
 
 def name_fix(message, user):
