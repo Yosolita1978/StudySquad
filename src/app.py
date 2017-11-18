@@ -1,12 +1,3 @@
-"""
-Flask Documentation:     http://flask.pocoo.org/docs/
-Flask-SQLAlchemy Documentation: http://flask-sqlalchemy.pocoo.org/
-SQLAlchemy Documentation: http://docs.sqlalchemy.org/
-FB Messenger Platform docs: https://developers.facebook.com/docs/messenger-platform.
-
-This file creates your application.
-"""
-
 import os
 import re
 import flask
@@ -15,14 +6,8 @@ from flask import render_template
 from flask_sqlalchemy import SQLAlchemy
 
 
-
 FACEBOOK_API_MESSAGE_SEND_URL = (
     'https://graph.facebook.com/v2.6/me/messages?access_token=%s')
-
-ADDRESS_REQUEST_REGEX = re.compile(r'address of (\w+)\?*', re.IGNORECASE)
-ADD_TASK_REGEX = re.compile(r'ADD\s(.+)', re.IGNORECASE)
-DONE_TASK_REGEX = re.compile(r'DONE\s(.+)', re.IGNORECASE)
-LIST_DONE_REGEX = re.compile(r'(list done)', re.IGNORECASE)
 
 app = flask.Flask(__name__)
 
@@ -45,9 +30,12 @@ class User(db.Model):
     facebook_id = db.Column(db.String, unique=True)
 
 def greeting(message, user):
-    """ returns greeting to user and asks what they want to be called"""
-    reply = "Meeeoooowwww! your name is %s is that right?"
+    """ returns greeting to user with yes or no button of is it right"""
+    reply = "Meeeoooowwww! Hiiiii your name is %s is that right?"
     return reply
+
+def name_fix(message, user):
+    """fix name if broke. return okay yay all fixed. Now what to do you want to learn today?"""
 
 def learn_tech(message, user):
     """ returns a TEXT question of what technology they want to learn"""
@@ -66,12 +54,17 @@ def learn_tech_level(message, user):
               {
                 "type":"web_url",
                 "url":"https://www.messenger.com",
-                "title":"Visit Messenger"
+                "title":"Beginner"
               },
               {
                 "type":"web_url",
                 "url":"https://www.messenger.com",
-                "title":"Visit Messengerrrrr"
+                "title":"Intermediate"
+              },
+              {
+                "type":"web_url",
+                "url":"https://www.messenger.com",
+                "title":"Baller sensei"
               },
 
             ]
@@ -111,6 +104,8 @@ def handle_message(message, sender_id):
 
     # WHEN TO LEARN
     elif message in ('javascript', 'js', 'python'):
+        message_text = learn_tech_level(message, user)
+    elif message in ('day'):
         message_text = learn_when(message, user)
     else:
         message_text = "Sorry try again I dont understand"
