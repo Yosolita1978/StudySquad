@@ -13,7 +13,7 @@ import flask
 import requests
 from flask_sqlalchemy import SQLAlchemy
 
-SQLALCHEMY_TRACK_MODIFICATIONS=False
+
 FACEBOOK_API_MESSAGE_SEND_URL = (
     'https://graph.facebook.com/v2.6/me/messages?access_token=%s')
 
@@ -35,7 +35,7 @@ WEBHOOK_VERIFICATION_TOKEN = os.environ.get(
 
 
 db = SQLAlchemy(app)
-
+SQLALCHEMY_TRACK_MODIFICATIONS=False
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -152,18 +152,19 @@ def index():
 
     """
     # Just for demonstration purposes
-    for user in User.query:  #
-        print 'User %d, username %s' % (user.id, user.username)
-        for address in user.addresses:
-            print 'Address %d, full_address %s' % (
-                address.id, address.full_address)
+    # for user in User.query:  #
+    #     print 'User %d, username %s' % (user.id, user.username)
+    #     for address in user.addresses:
+    #         print 'Address %d, full_address %s' % (
+    #             address.id, address.full_address)
 
     # Render all of this into an HTML template and return it. We use
     # User.query.all() to obtain a list of all users, rather than an
     # iterator. This isn't strictly necessary, but just to illustrate that both
     # User.query and User.query.all() are both possible options to iterate over
     # query results.
-    return flask.render_template('index.html', users=User.query.all())
+    # return flask.render_template('index.html', users=User.query.all())
+    return "HI I'm working"
 
 #This comment isn't Skynet level AI either, but I like the "keep it short policy"
 @app.route('/fb_webhook', methods=['GET', 'POST'])
