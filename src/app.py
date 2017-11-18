@@ -48,7 +48,7 @@ def greeting(message, user):
 
 def learn_tech(message, user):
     """ returns a TEXT question of what technology they want to learn"""
-    reply = "what do you want to learn?"
+    reply = "Noiiiice! What do you want to learn?"
     return reply
 
 def learn_tech_level(message, user):
@@ -65,14 +65,23 @@ def handle_message(message, sender_id):
     """This function deals with all the messages from a user. It has all the logic """
 
     #First query for the user that is taking to the bot
-    user = User.query.filter(User.facebook_id == sender_id).first()
+    # user = User.query.filter(User.facebook_id == sender_id).first()
+    user = "Dena"
 
     # GREETING
-    print "USER IS", user
+    if message in ('hello', 'hi', 'what\'s up?' 'meow' ):
+        print "USER IS", user
+        message_text = greeting(message, user)
 
     # WHAT TO LEARN
+    elif message in ('yes'):
+        message_text = learn_tech(message, user)
+
 
     # WHEN TO LEARN
+    elif message in ('javascript', 'js', 'python'):
+        message_text = learn_tech(message, user)
+
 
     # CREATE SQUAD
 
