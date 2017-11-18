@@ -25,12 +25,13 @@ LIST_DONE_REGEX = re.compile(r'(list done)', re.IGNORECASE)
 app = flask.Flask(__name__)
 
 # TODO: Set environment variables appropriately.
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.GET('DATABASE_URL')
 PAT = os.environ.get(
     "PAT")
 
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'mysecretkey')
-app.config['FACEBOOK_WEBHOOK_VERIFY_TOKEN'] = 'mysecretverifytoken'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+WEBHOOK_VERIFICATION_TOKEN = os.environ.get(
+    "FACEBOOK_WEBHOOK_VERIFY_TOKEN")
 
 
 db = SQLAlchemy(app)
@@ -178,7 +179,7 @@ def fb_webhook():
     if flask.request.method == 'GET':
         if (flask.request.args.get('hub.mode') == 'subscribe' and
             flask.request.args.get('hub.verify_token') ==
-            app.config['FACEBOOK_WEBHOOK_VERIFY_TOKEN']):
+            WEBHOOK_VERIFICATION_TOKEN):
             challenge = flask.request.args.get('hub.challenge')
             return challenge
         else:
