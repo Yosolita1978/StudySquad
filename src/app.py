@@ -13,7 +13,7 @@ import flask
 import requests
 from flask_sqlalchemy import SQLAlchemy
 
-
+SQLALCHEMY_TRACK_MODIFICATIONS=False
 FACEBOOK_API_MESSAGE_SEND_URL = (
     'https://graph.facebook.com/v2.6/me/messages?access_token=%s')
 
@@ -25,7 +25,7 @@ LIST_DONE_REGEX = re.compile(r'(list done)', re.IGNORECASE)
 app = flask.Flask(__name__)
 
 # TODO: Set environment variables appropriately.
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.GET('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 PAT = os.environ.get(
     "PAT")
 
