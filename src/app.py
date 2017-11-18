@@ -53,7 +53,7 @@ def learn_tech(message, user):
 
 def learn_tech_level(message, user):
     """ returns a BUTTON followup question of what level they want to learn"""
-      message = {
+    message = {
         "attachment":{
           "type":"template",
           "payload":{
@@ -169,7 +169,6 @@ def fb_webhook():
                           json={'recipient': {'id': sender_id},
                                 'message': {'text': reply}})
 
-    # Return an empty response.
     return ''
 
 if __name__ == '__main__':
