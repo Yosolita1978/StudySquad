@@ -104,8 +104,8 @@ def handle_message(message, sender_id):
     # WHEN TO LEARN
     elif message in ('javascript', 'js', 'python'):
         message_text = learn_tech(message, user)
-
-    message_text = "Sorry try again I dont understand"
+    else:
+        message_text = "Sorry try again I dont understand"
     # CREATE SQUAD
 
     return message_text
