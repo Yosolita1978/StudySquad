@@ -67,6 +67,7 @@ def handle_message(message, sender_id):
     #First query for the user that is taking to the bot
     # user = User.query.filter(User.facebook_id == sender_id).first()
     user = "Dena"
+    print "MESSAGE IS", message
 
     # GREETING
     if message in ('hello', 'hi', 'what\'s up?' 'meow' ):
