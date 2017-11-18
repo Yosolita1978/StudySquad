@@ -47,6 +47,7 @@ class User(db.Model):
 def greeting(message, user):
     """ returns greeting to user and asks what they want to be called"""
     reply = "Meeeoooowwww! your name is %s is that right?"
+    return reply
 
 def learn_tech(message, user):
     """ returns a TEXT question of what technology they want to learn"""
