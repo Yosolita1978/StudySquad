@@ -31,7 +31,7 @@ class User(db.Model):
 
 def greeting(message, user):
     """ returns greeting to user with yes or no button of is it right"""
-    reply = "Meeeoooowwww! Hiiiii your name is %s is that right?".format(user)
+    reply = "Meeeoooowwww! Hiiiii your name is %s that right?".format(user)
     return reply
 
 def name_fix(message, user):
@@ -109,7 +109,7 @@ def handle_message(message, sender_id):
         message_text = learn_when(message, user)
 
     #WHERE TO LEARN
-    elif message in ('day'):
+    elif message in ('saturday', 'sunday'):
         message_text = learn_where(message, user)
 
     else:
