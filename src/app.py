@@ -191,7 +191,7 @@ def fb_webhook():
 
     # Get the request body as a dict, parsed from JSON.
     payload = flask.request.json
-    print payload
+    print "PAYLOAD IS", payload
 
     # TODO: Validate app ID and other parts of the payload to make sure we're
     # not accidentally processing data that wasn't intended for us.
@@ -211,7 +211,8 @@ def fb_webhook():
                 continue
             sender_id = event['sender']['id']
             message_text = message['text']
-            reply = handle_message(message_text, sender_id)
+            # reply = handle_message(message_text, sender_id)
+            reply = message_text
             if reply:
                 request_url = FACEBOOK_API_MESSAGE_SEND_URL % (
                 PAT)
