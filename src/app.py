@@ -85,6 +85,11 @@ def learn_when(message, user):
     reply = "when do you want to learn"
     return reply
 
+def learn_where(message, user):
+    """ returns request for location with button """
+    reply = "where you at??"
+    return reply
+
 def handle_message(message, sender_id):
     """This function deals with all the messages from a user. It has all the logic """
 
@@ -105,11 +110,11 @@ def handle_message(message, sender_id):
 
     # WHEN TO LEARN
     elif message in ('javascript', 'js', 'python'):
-        message_text = learn_tech(message, user)
+        message_text = learn_when(message, user)
     else:
         message_text = "Sorry try again I dont understand"
     # CREATE SQUAD
-
+    print "RETURN MESSAGE IS", message_text
     return message_text
 
 @app.route('/')
