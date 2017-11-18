@@ -31,7 +31,7 @@ class User(db.Model):
 
 def greeting(message, user):
     """ returns greeting to user with yes or no button of is it right"""
-    reply = "Meeeoooowwww! Hiiiii your name is %s is that right?"
+    reply = "Meeeoooowwww! Hiiiii your name is %s is that right?".format(user)
     return reply
 
 def name_fix(message, user):
@@ -100,13 +100,18 @@ def handle_message(message, sender_id):
     # WHAT TO LEARN
     elif message in ('yes'):
         message_text = learn_tech(message, user)
-
-
-    # WHEN TO LEARN
+    # LEVEL
     elif message in ('javascript', 'js', 'python'):
         message_text = learn_tech_level(message, user)
-    elif message in ('day'):
+
+    # WHEN TO LEARN
+    elif message.lower() in ('medium', 'beginner', 'advanced', 'Baller sensei'):
         message_text = learn_when(message, user)
+
+    #WHERE TO LEARN
+    elif message in ('day'):
+        message_text = learn_where(message, user)
+
     else:
         message_text = "Sorry try again I dont understand"
     # CREATE SQUAD
