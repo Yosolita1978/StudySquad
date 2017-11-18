@@ -53,6 +53,28 @@ def learn_tech(message, user):
 
 def learn_tech_level(message, user):
     """ returns a BUTTON followup question of what level they want to learn"""
+      message = {
+        "attachment":{
+          "type":"template",
+          "payload":{
+            "template_type":"button",
+            "text":"What do you want to do next?",
+            "buttons":[
+              {
+                "type":"web_url",
+                "url":"https://www.messenger.com",
+                "title":"Visit Messenger"
+              },
+              {
+                "type":"web_url",
+                "url":"https://www.messenger.com",
+                "title":"Visit Messengerrrrr"
+              },
+
+            ]
+          }
+        }
+      }
     reply = "are you beginner, medium or advanced?"
     return reply
 
@@ -67,10 +89,10 @@ def handle_message(message, sender_id):
     #First query for the user that is taking to the bot
     # user = User.query.filter(User.facebook_id == sender_id).first()
     user = "Dena"
-    print "MESSAGE IS", message
+    print "MESSAGE IS", message, type(message)
 
     # GREETING
-    if message in ('hello', 'hi', 'what\'s up?' 'meow' ):
+    if message in ('hello', 'hi', 'what\'s up?', 'meow' ):
         print "USER IS", user
         message_text = greeting(message, user)
 
