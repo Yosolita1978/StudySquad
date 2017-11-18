@@ -11,7 +11,9 @@ import os
 import re
 import flask
 import requests
+from flask import render_template
 from flask_sqlalchemy import SQLAlchemy
+
 
 
 FACEBOOK_API_MESSAGE_SEND_URL = (
