@@ -26,8 +26,9 @@ app = flask.Flask(__name__)
 
 # TODO: Set environment variables appropriately.
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
-app.config['FACEBOOK_PAGE_ACCESS_TOKEN'] = os.environ.get(
-    'FACEBOOK_PAGE_ACCESS_TOKEN', 'mysecretverifyaccessstoken')
+PAT = os.environ.get(
+    "PAT")
+
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'mysecretkey')
 app.config['FACEBOOK_WEBHOOK_VERIFY_TOKEN'] = 'mysecretverifytoken'
 
@@ -209,7 +210,7 @@ def fb_webhook():
             reply = handle_message(message_text, sender_id)
             if reply:
                 request_url = FACEBOOK_API_MESSAGE_SEND_URL % (
-                app.config['FACEBOOK_PAGE_ACCESS_TOKEN'])
+                PAT)
                 requests.post(request_url,
                           headers={'Content-Type': 'application/json'},
                           json={'recipient': {'id': sender_id},
