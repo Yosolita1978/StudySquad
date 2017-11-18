@@ -177,10 +177,12 @@ def fb_webhook():
 
     """
     # Handle the initial handshake request.
+
     if flask.request.method == 'GET':
+        print "REQUEST IS", flask.request.method
         if (flask.request.args.get('hub.mode') == 'subscribe' and
             flask.request.args.get('hub.verify_token') ==
-            WEBHOOK_VERIFICATION_TOKEN):
+            'helloworldbot'):
             challenge = flask.request.args.get('hub.challenge')
             return challenge
         else:
